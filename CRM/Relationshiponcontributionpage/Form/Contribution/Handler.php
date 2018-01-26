@@ -63,10 +63,9 @@ class CRM_Relationshiponcontributionpage_Form_Contribution_Handler {
 			$honor_id = $honor['honor_id'];
 		} elseif (!empty($form->getVar('_contributionID'))) {
 			try {
-				$honor_id = civicrm_api3('ContributionSoft', 'getvalue', array(
-					'contribution_id' => $form->getVar('_contributionID'),
-					'return' => 'contact_id',
-				));
+				$honor_id = CRM_Core_DAO::singleValueQuery("SELECT contact_id FROM civicrm_contribution_soft WHERE contribution_id = %1", array(
+					1 => array($form->getVar('_contributionID'), 'Integer')
+				)); 
 			} catch (Exception $e) {
 				// Do nothing
 			}
