@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<extension key="org.civicoop.relationshiponcontributionpage" type="module">
+  <file>relationshiponcontributionpage</file>
+  <name>Create relationship between contact and honoree on a contribution page</name>
+  <description>Adds the possibility to enable the creation of relationship on the contribution page between the donor and the honoree</description>
+  <license>AGPL-3.0</license>
+  <maintainer>
+    <author>Jaap Jansma</author>
+    <email>jaap@edeveloper.nl</email>
+  </maintainer>
+  <urls>
+    <url desc="Main Extension Page">https://github.com/civicoop/org.civicoop.relationshiponcontributionpage</url>
+    <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
+  </urls>
+  <releaseDate>2018-01-26</releaseDate>
+  <version>1.0</version>
+  <develStage>stable</develStage>
+  <compatibility>
+    <ver>4.7</ver>
+  </compatibility>
+  <civix>
+    <namespace>CRM/Relationshiponcontributionpage</namespace>
+  </civix>
+</extension>
