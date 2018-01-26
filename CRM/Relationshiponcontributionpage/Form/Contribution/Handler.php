@@ -53,15 +53,29 @@ class CRM_Relationshiponcontributionpage_Form_Contribution_Handler {
 			return;
 		}
 		
-		$relationship_type = $form->getSubmitValue('relationship_type');
+		$params = $form->getVar('_params');
+		$relationship_type = $params['relationship_type'];
 		$values = $form->getVar('_values');
 		$contact_id = $form->getVar('_contactID');
 		$honor = $values['honor'];
-		if (!empty($relationship_type) && isset($honor['honor_id'])) {
+		$honor_id = false;
+		if (isset($honor['honor_id'])) {
+			$honor_id = $honor['honor_id'];
+		} elseif (!empty($form->getVar('_contributionID'))) {
+			try {
+				$honor_id = civicrm_api3('ContributionSoft', 'getvalue', array(
+					'contribution_id' => $form->getVar('_contributionID'),
+					'return' => 'contact_id',
+				));
+			} catch (Exception $e) {
+				// Do nothing
+			}
+		}
+		if (!empty($relationship_type) && !empty($honor_id)) {
 			civicrm_api3('Relationship', 'create', array(
 				'relationship_type_id' => $relationship_type,
 				'contact_id_a' => $contact_id,
-				'contact_id_b' => $honor['honor_id'],
+				'contact_id_b' => $honor_id,
 			));
 		}
 		
