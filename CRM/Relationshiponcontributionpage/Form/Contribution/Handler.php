@@ -54,10 +54,10 @@ class CRM_Relationshiponcontributionpage_Form_Contribution_Handler {
 		}
 		
 		$params = $form->getVar('_params');
-		$relationship_type = $params['relationship_type'];
+		$relationship_type_id = $params['relationship_type'];
 		$values = $form->getVar('_values');
 		$contact_id = $form->getVar('_contactID');
-		$honor = $values['honor'];
+		$honor = isset($values['honor']) ? $values['honor'] : array();
 		$honor_id = false;
 		if (isset($honor['honor_id'])) {
 			$honor_id = $honor['honor_id'];
@@ -70,9 +70,19 @@ class CRM_Relationshiponcontributionpage_Form_Contribution_Handler {
 				// Do nothing
 			}
 		}
-		if (!empty($relationship_type) && !empty($honor_id)) {
+		if (!empty($relationship_type_id) && !empty($honor_id)) {
+			// Check whether the contact has the contact subtype
+			$relationship_type = civicrm_api3('RelationshipType', 'getsingle', array('id' => $relationship_type_id));
+			
+			if (!self::hasContactSubType($contact_id, $relationship_type['contact_type_a'], $relationship_type['contact_sub_type_a'])) {
+				return;
+			}
+			if (!self::hasContactSubType($honor_id, $relationship_type['contact_type_b'], $relationship_type['contact_sub_type_b'])) {
+				return;
+			}
+			
 			civicrm_api3('Relationship', 'create', array(
-				'relationship_type_id' => $relationship_type,
+				'relationship_type_id' => $relationship_type_id,
 				'contact_id_a' => $contact_id,
 				'contact_id_b' => $honor_id,
 			));
@@ -80,6 +90,39 @@ class CRM_Relationshiponcontributionpage_Form_Contribution_Handler {
 		
 	}
 	
-	
+	/**
+	 * Check whether the contact has the subtype and if not try to upgrade the subtype
+	 */
+	protected static function hasContactSubType($cid, $contact_type, $contact_sub_type) {
+		try {
+			$contact = civicrm_api3('Contact', 'getsingle', array('id' => $cid));
+		} catch (Exception $e) {
+			return false;
+		}
+		
+		if ($contact['contact_type'] != $contact_type) {
+			return false;
+		}
+		if (empty($contact_sub_type)) {
+			return true; 
+		}
+		
+		if (isset($contact['contact_sub_type']) && is_array($contact['contact_sub_type']) && in_array($contact_sub_type, $contact['contact_sub_type'])) {
+			return true;
+		}
+		
+		// Try to set the desireed sub type
+		$params['id'] = $cid;
+		$params['contact_sub_type'] = $contact['contact_sub_type'];
+		$params['contact_sub_type'][] = $contact_sub_type;
+		
+		try {
+			civicrm_api3('Contact', 'create', $params);
+		} catch (Exception $e) {
+			return false;
+		}
+		
+		return true;
+	}
 	
 }
