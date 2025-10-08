@@ -82,7 +82,7 @@ class CRM_Relationshiponcontributionpage_Form_ContributionPage_Settings {
 		if ($formName != 'CRM_Contribute_Form_ContributionPage_Settings') {
 			return;
 		}
-		if (!$form->get_template_vars('snippet') || $form->get_template_vars('snippet') != 'json') {
+		if (!$form->getTemplateVars('snippet') || $form->getTemplateVars('snippet') != 'json') {
 			return;
 		}
 		
