@@ -70,9 +70,9 @@ function relationshiponcontributionpage_civicrm_postInstall() {
 function relationshiponcontributionpage_civicrm_uninstall() {
   _relationshiponcontributionpage_civix_civicrm_uninstall();
 	
-	CRM_Core_DAO::executeQuery("DELETE FROM civicrm_setting WHERE name LIKE %1", array(
-		1 => array(CRM_Relationshiponcontributionpage_Form_ContributionPage_Settings::SETTING_NAME_PREFIX.'%', 'String'),
-	));
+	CRM_Core_DAO::executeQuery("DELETE FROM civicrm_setting WHERE name LIKE %1", [
+		1 => [CRM_Relationshiponcontributionpage_Form_ContributionPage_Settings::SETTING_NAME_PREFIX.'%', 'String'],
+	]);
 }
 
 /**

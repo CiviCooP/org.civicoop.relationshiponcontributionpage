@@ -46,7 +46,7 @@ class CRM_Relationshiponcontributionpage_Form_ContributionPage_Settings {
 		if (isset($data['enabled']) && $data['enabled'] && isset($data['options']) && is_array($data['options'])) {
 			return $data['options'];
 		}
-		return array();
+		return [];
 	}
 	
 	private static function getSettingName($contributionPageId) {
@@ -71,7 +71,7 @@ class CRM_Relationshiponcontributionpage_Form_ContributionPage_Settings {
 	
 	public static function getAllActiveRelationships() {
 		$relationshipTypes = CRM_Core_PseudoConstant::relationshipType();
-		$relationshipTypeOptions = array();
+		$relationshipTypeOptions = [];
 		foreach($relationshipTypes as $typeId => $type) {
 			$relationshipTypeOptions[$typeId] = $type['label_a_b'];
 		}
@@ -89,14 +89,14 @@ class CRM_Relationshiponcontributionpage_Form_ContributionPage_Settings {
 		$relationshipTypeOptions = self::getAllActiveRelationships();
 		
 		$form->add('checkbox', 'soft_credit_relationship_enabled', E::ts('Create relationship between contact and honoree'));
-		$form->add('text', 'soft_credit_relationship_label', E::ts('Relationship label'), array(
+		$form->add('text', 'soft_credit_relationship_label', E::ts('Relationship label'), [
 			'size' => CRM_Utils_Type::HUGE,
-		));
-		$form->addSelect('soft_credit_relationship_options',array(
+		]);
+		$form->addSelect('soft_credit_relationship_options',[
 			'label' => E::ts('Exposed relationships'), 
 		  'options' => $relationshipTypeOptions, 
 			'multiple' => true,
-		));
+		]);
 		
 		$defaults['soft_credit_relationship_enabled'] = false;
 		$defaults['soft_credit_relationship_label'] = E::ts('Relationship');
@@ -108,9 +108,9 @@ class CRM_Relationshiponcontributionpage_Form_ContributionPage_Settings {
 		}
 		$form->setDefaults($defaults);
 		
-		CRM_Core_Region::instance('page-body')->add(array(
+		CRM_Core_Region::instance('page-body')->add([
       'template' => "CRM/Relationshiponcontributionpage/Form/ContributionPage/Settings.tpl"
-   	));
+   	]);
 	}
 
 	public static function postProcess($formName, CRM_Core_Form &$form) {
