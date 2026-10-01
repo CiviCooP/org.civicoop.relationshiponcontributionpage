@@ -29,7 +29,7 @@ class CRM_Relationshiponcontributionpage_Form_Contribution_Handler {
 		$label = CRM_Relationshiponcontributionpage_Form_ContributionPage_Settings::getRelationshipLabel($contributionPageid);
 		$possibleOptions = CRM_Relationshiponcontributionpage_Form_ContributionPage_Settings::getConfiguredRelationshipTypes($contributionPageid);
 		$allActiveRelationshipTypes = CRM_Relationshiponcontributionpage_Form_ContributionPage_Settings::getAllActiveRelationships();
-		$options = array();
+		$options = [];
 		$options[] = E::ts(' - Select - ');
 		foreach($possibleOptions as $type_id) {
 			if (isset($allActiveRelationshipTypes[$type_id])) {
@@ -38,9 +38,9 @@ class CRM_Relationshiponcontributionpage_Form_Contribution_Handler {
 		} 
 		
 		$form->add('select', 'relationship_type', $label , $options);
-		CRM_Core_Region::instance('page-body')->add(array(
+		CRM_Core_Region::instance('page-body')->add([
       'template' => "CRM/Relationshiponcontributionpage/Form/Contribution/Handler.tpl"
-     ));
+     ]);
 	}
 	
 	public static function postProcess($formName, CRM_Contribute_Form_ContributionBase &$form) {
@@ -57,22 +57,22 @@ class CRM_Relationshiponcontributionpage_Form_Contribution_Handler {
 		$relationship_type_id = $params['relationship_type'];
 		$values = $form->getVar('_values');
 		$contact_id = $form->getVar('_contactID');
-		$honor = isset($values['honor']) ? $values['honor'] : array();
+		$honor = isset($values['honor']) ? $values['honor'] : [];
 		$honor_id = false;
 		if (isset($honor['honor_id'])) {
 			$honor_id = $honor['honor_id'];
 		} elseif (!empty($form->getVar('_contributionID'))) {
 			try {
-				$honor_id = CRM_Core_DAO::singleValueQuery("SELECT contact_id FROM civicrm_contribution_soft WHERE contribution_id = %1", array(
-					1 => array($form->getVar('_contributionID'), 'Integer')
-				)); 
+				$honor_id = CRM_Core_DAO::singleValueQuery("SELECT contact_id FROM civicrm_contribution_soft WHERE contribution_id = %1", [
+					1 => [$form->getVar('_contributionID'), 'Integer']
+				]);
 			} catch (Exception $e) {
 				// Do nothing
 			}
 		}
 		if (!empty($relationship_type_id) && !empty($honor_id)) {
 			// Check whether the contact has the contact subtype
-			$relationship_type = civicrm_api3('RelationshipType', 'getsingle', array('id' => $relationship_type_id));
+			$relationship_type = civicrm_api3('RelationshipType', 'getsingle', ['id' => $relationship_type_id]);
 			
 			if (!self::hasContactSubType($contact_id, $relationship_type['contact_type_a'], $relationship_type['contact_sub_type_a'])) {
 				return;
@@ -81,11 +81,11 @@ class CRM_Relationshiponcontributionpage_Form_Contribution_Handler {
 				return;
 			}
 			
-			civicrm_api3('Relationship', 'create', array(
+			civicrm_api3('Relationship', 'create', [
 				'relationship_type_id' => $relationship_type_id,
 				'contact_id_a' => $contact_id,
 				'contact_id_b' => $honor_id,
-			));
+			]);
 		}
 		
 	}
@@ -95,7 +95,7 @@ class CRM_Relationshiponcontributionpage_Form_Contribution_Handler {
 	 */
 	protected static function hasContactSubType($cid, $contact_type, $contact_sub_type) {
 		try {
-			$contact = civicrm_api3('Contact', 'getsingle', array('id' => $cid));
+			$contact = civicrm_api3('Contact', 'getsingle', ['id' => $cid]);
 		} catch (Exception $e) {
 			return false;
 		}
