@@ -2,3 +2,5 @@
 
 This extension gives you the ability to relate the donor and the honoree on a contribution page.
 The donor can select which relationship he or she has with the honoree and you can specify what type of selection the donor can chose from.
+
+This extension is outdated and it could be that it is not installable any more. See #4
